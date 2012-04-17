@@ -1,0 +1,4 @@
+An implementation of Finite State Machine in ActionScript3.0
+
+This FSM uses a Embedded Rules, which transitions are defined in their state itself. 
+So you need to create concrete state class and implements the IState interface. And then you must define each action or behaviour and also the transition in each state methods.
