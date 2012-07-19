@@ -1,5 +1,6 @@
 package entities 
 {	
+	import com.pzuh.ai.statemachine.BaseState;
 	import states.*;
 	
 	import com.pzuh.ai.statemachine.FiniteStateMachine;
@@ -25,15 +26,71 @@ package entities
 			super(name);
 			
 			goldCarried = 0;
-			goldAtBank = 0;
+			goldAtBank = 0;	
 			
+			initState();
+		}
+		
+		//the example for initializing the state machine
+		private function initState():void
+		{
 			myStateMachine = new FiniteStateMachine();
-			myStateMachine.changeState(new MiningState(this));
+			
+			//initialize the states
+			var atBankState:BaseState = new AtBankState(this, BANK);
+			var atBarState:BaseState = new AtBarState(this, BAR);
+			
+			//this is an example of state which its transition defined outside the state class
+			//simply call the addTransition method and define the target state and also the trigger
+			var atMineState:BaseState = new MiningState(this, MINE);
+			atMineState.addTransition(BANK, isPocketFull);
+			atMineState.addTransition(BAR, isThirsty);
+			atMineState.addTransition(HOME, isTired);
+			
+			//this is an example of state which doesn't have a concrete state class
+			//so, the transition and also the action must be defined here
+			var atHomeState:BaseState = new BaseState(this, HOME);
+			atHomeState.addTransition(MINE, isFullyRested);
+			atHomeState.addAction(atHome, enterHome, exitHome);			
+			
+			//insert all the states to the state machine
+			myStateMachine.addState([atBankState, atBarState, atMineState, atHomeState]);
+			
+			//set the initial state to start
+			changeState(HOME);
 		}
 		
 		override public function update():void
 		{
+			//don't forget to call update method, so the machine can be updated regularly
 			myStateMachine.update();
+		}
+		
+		public function changeState(state:String):void
+		{
+			myStateMachine.changeState(state);
+		}
+		
+		private function atHome():void
+		{
+			increaseEnergy();
+			
+			trace(name + ": is sleeping, energy: " + energy);
+		}
+		
+		private function enterHome():void
+		{
+			if (getLoc() != HOME)
+			{
+				setLoc(HOME);
+				
+				trace(name + ": Home sweet home");
+			}
+		}
+		
+		private function exitHome():void
+		{
+			trace(name + ": leavin this fuckin' old house");
 		}
 		
 		public function isPocketFull():Boolean

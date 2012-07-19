@@ -1,4 +1,6 @@
-An implementation of Finite State Machine in ActionScript3.0 for AI bot/agent in a video games
+An implementation of Finite State Machine in ActionScript3.0 for AI bot/agent in a video games.
 
-This FSM uses a Embedded Rules, which transitions are defined in their state itself. 
-So you need to create concrete state class and implements the IState interface. And then you must define each action or behaviour and also the transition in each state methods.
+This contains a base state class to create the concrete state classes, if you follow embedded rule which all actions and transition defined in the concrete states.
+Optionally, it also support another method which define the transitions and/or the actions outside the concrete state classes.
+
+For the details how to implements the machine, please refer to the sample code.

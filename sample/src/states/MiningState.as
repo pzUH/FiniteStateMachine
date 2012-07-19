@@ -2,20 +2,16 @@ package states
 {
 	import entities.*;
 	
-	import com.pzuh.ai.statemachine.IState;
+	import com.pzuh.ai.statemachine.BaseState;
 	
-	public class MiningState implements IState
+	public class MiningState extends BaseState
 	{
-		private var myEntity:Miner;
-		
-		public function MiningState(entity:Miner) 
+		public function MiningState(entity:Miner, name:String) 
 		{
-			myEntity = entity;
+			super(entity, name);
 		}
 		
-		/* INTERFACE IState */
-		
-		public function enter():void 
+		override public function enter():void 
 		{
 			if (myEntity.getLoc() != Miner.MINE)
 			{
@@ -25,8 +21,10 @@ package states
 			}
 		}
 		
-		public function update():void 
+		override public function update():void 
 		{
+			super.update();
+			
 			myEntity.increaseGoldCarried();
 			myEntity.increaseThirst();
 			myEntity.decreaseEnergy();
@@ -34,31 +32,9 @@ package states
 			trace(myEntity.getName() + ": wurking at mine, collecting " + myEntity.getGoldCarried() + 
 			" chunk of gold. Current energy: " + myEntity.getEnergy() + ". Thirst level: " +
 			myEntity.getThirst());
-			
-			
-			if (myEntity.isTired() == true)
-			{
-				trace(myEntity.getName() + " : I'm tired, heading to home now");
-				
-				myEntity.getStateMachine().changeState(new AtHomeState(myEntity));
-			}
-			
-			if (myEntity.isThirsty() == true)
-			{
-				trace(myEntity.getName() + " : I'm thirsty, lookin' some cold beer at the bar");
-				
-				myEntity.getStateMachine().changeState(new AtBarState(myEntity));
-			}
-			
-			if (myEntity.isPocketFull() == true)
-			{
-				trace(myEntity.getName() + " : Mah pocket is full of gold, I should go to the bank");
-				
-				myEntity.getStateMachine().changeState(new AtBankState(myEntity));
-			}
 		}
 		
-		public function exit():void 
+		override public function exit():void 
 		{
 			trace(myEntity.getName() + ": leavin' this dark gold mine");
 		}		

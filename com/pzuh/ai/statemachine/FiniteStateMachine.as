@@ -2,17 +2,30 @@ package com.pzuh.ai.statemachine
 {	
 	public class FiniteStateMachine
 	{
-		private var currentState:IState;
+		private var currentState:BaseState;
 		
 		//global state: a state to control transition for multiple states which have same transition to several target states
 		//just a hack if you didn't want to implement a Hierarchical State Machine
-		private var globalState:IState;
+		private var globalState:BaseState;
+		
+		private var stateArray:Array = new Array();
 		
 		public function FiniteStateMachine() 
 		{
 			currentState = null;
 			globalState = null;
-		}	
+		}
+		
+		public function addState(states:Array):void
+		{
+			for (var i:int = 0; i < states.length; i++)
+			{
+				if (stateArray.indexOf(states[i]) == -1)
+				{
+					stateArray.push(states[i]);
+				}
+			}
+		}
 		
 		//call this method on the entity main loop/update
 		public function update():void
@@ -25,26 +38,56 @@ package com.pzuh.ai.statemachine
 			}
 		}
 		
-		public function changeState(state:IState):void
+		public function changeState(targetState:String):void
 		{
+			var nextState:BaseState = getState(targetState);
+			
 			if (currentState != null) 
 			{
 				currentState.exit();
 			}
 			
-			currentState = state;
+			currentState = nextState;
 			currentState.enter();
 		}
 		
+		public function removeSelf():void
+		{
+			for (var i:int = stateArray.length - 1; i >= 0; i--)
+			{
+				stateArray[i].removeSelf();
+				stateArray.splice(i, 1);
+			}
+			
+			stateArray = null;
+			
+			currentState = null;
+			
+			globalState = null;
+		}
+		
 		//getter setter
-		public function setGlobalState(state:IState):void
+		public function setGlobalState(state:BaseState):void
 		{
 			globalState = state;
 		}
 		
-		public function getCurrentState():IState
+		public function getCurrentState():BaseState
 		{
 			return currentState;
+		}
+		
+		public function getState(name:String):BaseState
+		{
+			for (var i:int = 0; i < stateArray.length; i++)
+			{
+				if (stateArray[i].getName() == name)
+				{
+					return stateArray[i];
+				}
+			}
+			
+			return null;
 		}
 	}
 }

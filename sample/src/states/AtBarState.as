@@ -4,18 +4,14 @@ package states
 	
 	import entities.*;
 	
-	public class AtBarState implements IState
+	public class AtBarState extends BaseState
 	{
-		private var myEntity:Miner;
-		
-		public function AtBarState(entity:Miner) 
+		public function AtBarState(entity:Miner, name:String) 
 		{
-			myEntity = entity;
+			super(entity, name);
 		}
 		
-		/* INTERFACE IState */
-		
-		public function enter():void 
+		override public function enter():void 
 		{
 			if (myEntity.getLoc() != Miner.BAR)
 			{
@@ -25,7 +21,7 @@ package states
 			}
 		}
 		
-		public function update():void 
+		override public function update():void 
 		{
 			myEntity.decreaseThirst();
 			
@@ -36,11 +32,11 @@ package states
 			{
 				trace(myEntity.getName() + ": i'm fully loaded, ready to work again");
 				
-				myEntity.getStateMachine().changeState(new MiningState(myEntity));
+				myEntity.changeState(Miner.MINE);
 			}
 		}
 		
-		public function exit():void 
+		override public function exit():void 
 		{
 			trace(myEntity.getName() + " leavin' this fuckin' great bar");
 		}		

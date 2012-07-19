@@ -2,20 +2,16 @@ package states
 {	
 	import entities.*;
 	
-	import com.pzuh.ai.statemachine.IState;
+	import com.pzuh.ai.statemachine.BaseState
 	
-	public class AtBankState implements IState
+	public class AtBankState extends BaseState
 	{
-		private var myEntity:Miner;
-		
-		public function AtBankState(entity:Miner) 
+		public function AtBankState(entity:Miner, name:String) 
 		{
-			myEntity = entity;
+			super(entity, name);
 		}
 		
-		/* INTERFACE IState */
-		
-		public function enter():void 
+		override public function enter():void 
 		{
 			if (myEntity.getLoc() != Miner.BANK)
 			{
@@ -25,7 +21,7 @@ package states
 			}
 		}
 		
-		public function update():void 
+		override public function update():void 
 		{
 			myEntity.depositGold();
 			
@@ -36,17 +32,17 @@ package states
 			{
 				trace(myEntity.getName() + ": I'm rich, now I can sleep at home");
 				
-				myEntity.getStateMachine().changeState(new AtHomeState(myEntity));
+				myEntity.changeState(Miner.HOME);
 			}
 			else
 			{
 				trace(myEntity.getName() + ": Uhm, I still a poor guy, need to lookin' sum gold at the mine");
 				
-				myEntity.getStateMachine().changeState(new MiningState(myEntity));
+				myEntity.changeState(Miner.MINE);
 			}
 		}
 		
-		public function exit():void 
+		override public function exit():void 
 		{
 			trace(myEntity.getName() + ": leavin' the bank");
 		}		
