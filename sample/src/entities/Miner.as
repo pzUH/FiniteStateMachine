@@ -4,7 +4,6 @@ package entities
 	import states.*;
 	
 	import com.pzuh.ai.statemachine.FiniteStateMachine;
-	import com.pzuh.ai.statemachine.IState;
 	
 	public class Miner extends BaseEntity
 	{
@@ -54,7 +53,7 @@ package entities
 			atHomeState.addAction(atHome, enterHome, exitHome);			
 			
 			//insert all the states to the state machine
-			myStateMachine.addState([atBankState, atBarState, atMineState, atHomeState]);
+			myStateMachine.addState(atBankState, atBarState, atMineState, atHomeState);
 			
 			//set the initial state to start
 			changeState(HOME);
